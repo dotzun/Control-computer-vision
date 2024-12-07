@@ -3,6 +3,7 @@ import mediapipe as mp
 import numpy as np
 import pyautogui as pg
 pg.FAILSAFE = True
+pg.PAUSE = 0.5
 import pygetwindow as pgw
 import time
 import math
@@ -56,7 +57,6 @@ while(cap.isOpened()):
         bf = results.multi_hand_landmarks[0].landmark[12]
         sf = results.multi_hand_landmarks[0].landmark[4]
         pf = results.multi_hand_landmarks[0].landmark[8]
-        print(int(x)-int(x1))
         if "Left" in str(results.multi_handedness[0]):
             hand = "Left"
         else:
@@ -65,23 +65,19 @@ while(cap.isOpened()):
                 cv2.circle(flippedRGB,(int(x), int(y)), int(r), (0, 0, 255), 2)
                 prev_fist = False
                 if int(x)-int(x1)<=-sensitivity and hand == 'Right' and abs(int(x)-int(x1))>=sensitivity:
-                    print(0)
                     pg.hotkey('alt', 'esc')
                     pgw.getActiveWindow().maximize()
-                    time.sleep(0.45)
+                    time.sleep(0.5)
                 elif math.hypot((bf.x - sf.x) * flippedRGB.shape[1], (bf.y - sf.y) * flippedRGB.shape[0]) <= 40:
                     pg.hotkey('win', 'shift', 's')
-                    time.sleep(0.45)
                 elif math.hypot((nose.x - pf.x) * flippedRGB.shape[1], (nose.y - pf.y) * flippedRGB.shape[0]) <= 45:
-                    pg.press('volumemute')
-                    time.sleep(0.45)   
+                    pg.press('volumemute') 
         else:
             cv2.circle(flippedRGB,(int(x), int(y)), int(r), (0, 255, 0), 2)
             if not prev_fist:
                 if active is not None:
                     active.minimize()
                     prev_fist = True
-                    time.sleep(0.45)
-
+                    time.sleep(0.5)
 handsDetector.close()
 face_mesh.close()
